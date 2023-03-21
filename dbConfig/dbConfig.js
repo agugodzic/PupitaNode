@@ -4,7 +4,7 @@ import mysql2 from 'mysql2';
 
 //const config = env;
 
-const db = new Sequelize(config.DATABASE_NAME, config.DB_USER_NAME , config.DB_PASSWORD, {
+const db = new Sequelize(precess.env.DATABASE_NAME, precess.env.DB_USER_NAME , precess.env.DB_PASSWORD, {
   host: precess.env.DB_HOST,
   //port: '3306',
   password: precess.env.DB_PASSWORD,
