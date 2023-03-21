@@ -49,8 +49,11 @@ export const notificationOrder = async(req,res)=>{
       console.log('Merchant order: ', merchantOrder)
       break;
   }
-  if(!orderId || !paymentId || !orderId){
-    return res.status(400).json({error:"null element into req"})
+  if(!orderId || !paymentId || !topic){
+    //return res.status(400).json({error:"null element into req"})
+    orderId = 0;
+    paymentId = 0;
+    topic="0";
   }
   try{
     const add = await order.create({
