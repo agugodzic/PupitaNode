@@ -1,8 +1,8 @@
 import mercadopago  from "mercadopago";
 //import env from "../env.js";
-import orderId from "../models/orderId.js";
+import OrderId from "../models/orderId.js";
 
-const order = orderId;
+const order = OrderId;
 //const config = env;
 
 mercadopago.configure({
