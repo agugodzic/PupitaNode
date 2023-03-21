@@ -4,10 +4,10 @@ import mysql2 from 'mysql2';
 
 //const config = env;
 
-const db = new Sequelize(precess.env.DATABASE_NAME, precess.env.DB_USER_NAME , precess.env.DB_PASSWORD, {
-  host: precess.env.DB_HOST,
+const db = new Sequelize(process.env.DATABASE_NAME, process.env.DB_USER_NAME , process.env.DB_PASSWORD, {
+  host: process.env.DB_HOST,
   //port: '3306',
-  password: precess.env.DB_PASSWORD,
+  password: process.env.DB_PASSWORD,
   dialect: 'mysql',
   dialectModule: mysql2,
 

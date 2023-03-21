@@ -6,17 +6,17 @@ const order = orderId;
 //const config = env;
 
 mercadopago.configure({
-  access_token:precess.env.TEST_TOKEN
+  access_token:process.env.TEST_TOKEN
 });
 
 function preferenceGenerator(preference){
   var pref = {
     back_urls:{
-      success: precess.env.SUCCESS
+      success: process.env.SUCCESS
  },
     items: preference.items,
     metadata:preference.metadata,
-    notificationUrl:precess.env.NOTIFICATION_URL
+    notificationUrl:process.env.NOTIFICATION_URL
   };
   return pref;
 };
