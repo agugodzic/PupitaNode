@@ -12,7 +12,7 @@ productRouter.get('/productos/id/:id', async(req,res)=>{
       id:id
     }
   });
-  res.json(dato);
+  resres.status(200).json(dato);
 })
 
 productRouter.get('/productos/listar', async(req,res)=>{
@@ -21,7 +21,7 @@ productRouter.get('/productos/listar', async(req,res)=>{
     res.send(dato);
   }catch(error){
     console.log(error);
-    res.send(error);
+    resres.status(200).send(error);
   }
 })
 
@@ -29,6 +29,7 @@ productRouter.post('/productos/agregar', async(req,res)=>{
   try{
     const add = await product.create(req.body);
   res.json(add);
+  res.status(200)
   }catch(err){
     res.status(400).json({error:"Error:" + err})
   }
@@ -43,7 +44,7 @@ productRouter.put('/productos/editar', async(req,res)=>{
     res.status(200).json(product);
   } catch (err) {
       console.log("Error: "+ err);
-      res.send(err);
+      resres.status(200).send(err);
   }        
 })
 
@@ -57,7 +58,7 @@ productRouter.delete('/productos/:id', async(req,res)=>{
     });
     res.send("Producto eliminado:" + dato);
   } catch (err) {
-      res.send(err)
+      resres.status(200).send(err)
   }        
 })
 
