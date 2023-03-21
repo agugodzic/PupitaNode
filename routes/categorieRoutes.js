@@ -11,24 +11,23 @@ categorieRouter.get('/categorias/id/:id', async(req,res)=>{
       id:id
     }
   });
-  resres.status(200).json(dato);
+  res.status(200).json(dato);
 });
 
 categorieRouter.get('/categorias/listar', async(req,res)=>{
   try{
     const dato = await categorie.findAll();
-    resres.status(200).send(dato);
+    res.status(200).send(dato);
   }catch(error){
     console.log("Error: "+ error);
-    res.send(error);
+    res.status(400).send(error);
   }
 })
 
 categorieRouter.post('/categorias/agregar', async(req,res)=>{
   try{
     const add = await categorie.create(req.body);
-    res.status(200)
-  res.json(add);
+    res.status(200).json(add);
   }catch(err){
     res.status(400).json({error:"Error:" + err});
   }
@@ -43,7 +42,7 @@ categorieRouter.put('/categorias/editar', async(req,res)=>{
     res.status(200).json(categorie);
   } catch (err) {
       console.log("Error: "+ err);
-      res.send(err);
+      res.status(400).end(err);
   }        
 });
 
