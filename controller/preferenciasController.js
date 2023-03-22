@@ -4,19 +4,19 @@ import OrderId from "../models/orderId.js";
 
 const order = OrderId;
 //const config = env;
-
+const config =process.env;
 mercadopago.configure({
-  access_token:process.env.TEST_TOKEN
+  access_token:config.TEST_TOKEN
 });
 
 function preferenceGenerator(preference){
   var pref = {
     back_urls:{
-      success: process.env.SUCCESS
+      success: config.SUCCESS
  },
     items: preference.items,
     metadata:preference.metadata,
-    notificationUrl:process.env.NOTIFICATION_URL
+    notificationUrl:config.NOTIFICATION_URL
   };
   return pref;
 };

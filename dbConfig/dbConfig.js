@@ -3,11 +3,12 @@ import mysql2 from 'mysql2';
 //import env from '../env.js'
 
 //const config = env;
+const config = process.env;
 
-const db = new Sequelize(process.env.DATABASE_NAME, process.env.DB_USER_NAME , process.env.DB_PASSWORD, {
-  host: process.env.DB_HOST,
+const db = new Sequelize(config.DATABASE_NAME, config.DB_USER_NAME , config.DB_PASSWORD, {
+  host: config.DB_HOST,
   //port: '3306',
-  password: process.env.DB_PASSWORD,
+  password: config.DB_PASSWORD,
   dialect: 'mysql',
   dialectModule: mysql2,
 

@@ -55,9 +55,9 @@ productRouter.delete('/productos/:id', async(req,res)=>{
       id: id
     }
     });
-    res.send("Producto eliminado:" + dato);
+    res.status(200).send("Producto eliminado:" + dato);
   } catch (err) {
-      res.status(200).send(err)
+      res.status(400).send(err)
   }        
 })
 
