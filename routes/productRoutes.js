@@ -48,17 +48,13 @@ productRouter.put('/productos/editar', async(req,res)=>{
 })
 
 productRouter.delete('/productos/:id', async(req,res)=>{
-  try {
-    const {id} = req.params;
-    const dato = await product.destroy({
-      where: {
-      id: id
-    }
-    });
-    res.status(200).send("Producto eliminado:" + dato);
-  } catch (err) {
-      res.status(400).send(err)
-  }        
+  const {id} = req.params;
+  const dato = await product.destroy({
+    where: {
+    id: id
+  }}).then(function(result){
+    res.redirect(200,"")
+  });        
 })
 
 export default productRouter;
