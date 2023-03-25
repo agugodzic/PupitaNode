@@ -15,7 +15,7 @@ const DB = db;
 app.use(express.json({limit:'50mb'}));
 app.use(morgan('dev'));
 app.use(cors({
-  origin:"https://pupitapetshop.com.ar"
+  origin:"https://pupitapetshop.com.ar/#"
 }));
 
 (async ()=> {
