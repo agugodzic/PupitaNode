@@ -31,7 +31,7 @@ app.use(cors({
 })();
 
 app.get("/",(req,res)=>{
-  res.send("Pupita Backend")
+  res.send("Pupita Backend config cors")
 });
 
 app.use(router);
@@ -41,4 +41,4 @@ app.use(checkoutRouter);
 app.use(orderRouter);
 app.use(userRouter);
 
-app.listen(3000,console.log("Server conection: localhost:3000"))
+app.listen(3000,console.log("Server conection: localhost:3000 "))
