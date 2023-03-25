@@ -1,6 +1,6 @@
 import mercadopago  from "mercadopago";
-//import env from "../env.js";
-import OrderId from "../models/orderId.js";
+import env from "../env.js";
+//import OrderId from "../models/orderId.js";
 
 const order = OrderId;
 //const config = env;
