@@ -15,7 +15,7 @@ const DB = db;
 app.use(express.json({limit:'50mb'}));
 app.use(morgan('dev'));
 
-var whitelist = ['http://localhost:4200', 'https://pupitapetshop.com.ar']
+var whitelist = [ 'https://pupitapetshop.com.ar']
 
 var corsOptions = {
   origin: function (origin, callback) {
@@ -28,18 +28,8 @@ var corsOptions = {
 }
 
 app.use(cors({
-  corsOptions
+  origin:"https://pupitapetshop.com.ar"
 }));
-
-app.use((req, res, next) => {
-  res.header('Access-Control-Allow-Origin', '*');
-  res.header('Access-Control-Allow-Headers', 'Authorization, X-API-KEY, Origin, X-Requested-With, Content-Type, Accept, Access-Control-Allow-Request-Method');
-  res.header('Access-Control-Allow-Methods', 'GET, POST, OPTIONS, PUT, DELETE');
-  res.header('Allow', 'GET, POST, OPTIONS, PUT, DELETE');
-  next();
-});
-
-
 
 (async ()=> {
   try{
