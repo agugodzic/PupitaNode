@@ -14,9 +14,9 @@ const DB = db;
 
 app.use(express.json({limit:'50mb'}));
 app.use(morgan('dev'));
-
-
-app.use(cors());
+app.use(cors({
+  origin:"https://pupitapetshop.com.ar"
+}));
 
 (async ()=> {
   try{
@@ -31,7 +31,7 @@ app.use(cors());
 })();
 
 app.get("/",(req,res)=>{
-  res.send("Pupita Backend CorsOptions Vercel Json")
+  res.send("Pupita Backend config cors")
 });
 
 app.use(router);
