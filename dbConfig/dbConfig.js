@@ -4,7 +4,6 @@ import mysql2 from 'mysql2';
 
 //const config = env;
 const config = process.env;
-
 const db = new Sequelize(config.DATABASE_NAME, config.DB_USER_NAME , config.DB_PASSWORD, {
 
   host: config.DB_HOST,
