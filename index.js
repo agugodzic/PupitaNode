@@ -44,7 +44,7 @@ app.use(cors({
 })();
 
 app.get("/",(req,res)=>{
-  res.send("Pupita Backend CorsOptions")
+  res.send("Pupita Backend CorsOptions Vercel Json")
 });
 
 app.use(router);
