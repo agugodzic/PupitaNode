@@ -14,9 +14,32 @@ const DB = db;
 
 app.use(express.json({limit:'50mb'}));
 app.use(morgan('dev'));
+
+var whitelist = ['http://localhost:4200', 'https://pupitapetshop.com.ar']
+
+var corsOptions = {
+  origin: function (origin, callback) {
+    if (whitelist.indexOf(origin) !== -1) {
+      callback(null, true)
+    } else {
+      callback(new Error('Not allowed by CORS'))
+    }
+  }
+}
+
 app.use(cors({
-  origin:"https://pupitapetshop.com.ar"
+  corsOptions
 }));
+
+app.use((req, res, next) => {
+    res.header('Access-Control-Allow-Origin', '*');
+    res.header('Access-Control-Allow-Headers', 'Authorization, X-API-KEY, Origin, X-Requested-With, Content-Type, Accept, Access-Control-Allow-Request-Method');
+    res.header('Access-Control-Allow-Methods', 'GET, POST, OPTIONS, PUT, DELETE');
+    res.header('Allow', 'GET, POST, OPTIONS, PUT, DELETE');
+    next();
+});
+
+
 
 (async ()=> {
   try{
@@ -31,7 +54,7 @@ app.use(cors({
 })();
 
 app.get("/",(req,res)=>{
-  res.send("Pupita Backend config cors")
+  res.send("Pupita Backend CorsOptions")
 });
 
 app.use(router);
