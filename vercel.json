@@ -1,21 +1,6 @@
 {
   "version": 2,
-  "name": "petgram-TU_NOMBRE",
-  "builds": [
-      { "use": "@vercel/static-build", "src": "package.json"}
-  ],
-  "routes": [
-      {
-          "src": "(.*).js",
-          "dest": "/$1.js"            
-      },
-      {
-          "src": "(.*).json",
-          "dest": "/$1.json"            
-      },
-      {
-          "src": "/.*",
-          "dest": "index.html"
-      }
-  ]
-} 
+  "rewrites": [{
+    "source": "/api/(.*)", "destination": "/api/index.js"
+  }]
+}
