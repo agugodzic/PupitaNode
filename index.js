@@ -12,7 +12,7 @@ import db from "./dbConfig/dbConfig.js";
 const app = express();
 const DB = db;
 
-app.use(express.json({limit:'50mb'}));
+app.use(express.json({limit:'500mb'}));
 app.use(morgan('dev'));
 
 app.use(cors({
