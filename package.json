@@ -5,6 +5,7 @@
   "main": "index.js",
   "type": "module",
   "scripts": {
+    "vercel-build": "vercel build",
     "start": "npm index.js"
   },
   "author": "agustin godzic",
