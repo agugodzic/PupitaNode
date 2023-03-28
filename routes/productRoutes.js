@@ -17,7 +17,20 @@ productRouter.get('/productos/id/:id', async(req,res)=>{
 
 productRouter.get('/productos/listar', async(req,res)=>{
   try{
+    const dato = await product.findAll(
+      {attributes: ['id', 'nombre','precio','descripcion','descripcioncorta','marca','imagen1']}
+    );
+    res.status(200).send(dato);
+  }catch(error){
+    console.log(error);
+    res.status(400).send(error);
+  }
+})
+
+productRouter.get('/productos/rango/1', async(req,res)=>{
+  try{
     const dato = await product.findAll();
+    const rango = 
     res.status(200).send(dato);
   }catch(error){
     console.log(error);
