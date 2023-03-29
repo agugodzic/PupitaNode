@@ -76,7 +76,7 @@ var merchantOrder;
 
 switch(topic){
   case "payment":
-    payment = await mercadopago.payment.findById(paymentId);
+    const payment = await mercadopago.payment.findById(paymentId);
     console.log("Topic: " , topic , 'Payment: ', payment);
     merchantOrder = await mercadopago.merchant_orders.findById(payment.body.order.id);
     console.log('Merchant order:', merchantOrder)

@@ -27,10 +27,13 @@ productRouter.get('/productos/listar', async(req,res)=>{
   }
 })
 
-productRouter.get('/productos/rango/1', async(req,res)=>{
+productRouter.get('/productos/rango/:rango', async(req,res)=>{
   try{
-    const dato = await product.findAll();
-    const rango = 
+    const { rango } = req.params;
+    const dato = await product.findAll(
+      {attributes: ['id', 'nombre','precio','descripcion','descripcioncorta','marca','imagen1']}
+    );
+    const datoRango = 
     res.status(200).send(dato);
   }catch(error){
     console.log(error);
