@@ -73,5 +73,16 @@ productRouter.delete('/productos/:id', async(req,res)=>{
   });        
 })
 
+productRouter.delete('/productos/imagenes/:id', async(req,res)=>{
+  const {id} = req.params;
+  const dato = await product.findAll({
+    where:{
+      id:id
+    },
+    attributes: ['imagen2','imagen3','imagen4']
+  });
+  res.status(200).json(dato);   
+})
+
 export default productRouter;
 
