@@ -18,7 +18,7 @@ productRouter.get('/productos/id/:id', async(req,res)=>{
 productRouter.get('/productos/listar', async(req,res)=>{
   try{
     const dato = await product.findAll(
-      {attributes: ['id', 'nombre','precio','descripcion','descripcioncorta','marca','imagen1']}
+      {attributes: ['id', 'nombre','precio','descripcion','categoria','descripcioncorta','marca','imagen1']}
     );
     res.status(200).send(dato);
   }catch(error){
@@ -30,11 +30,24 @@ productRouter.get('/productos/listar', async(req,res)=>{
 productRouter.get('/productos/rango/:rango', async(req,res)=>{
   try{
     const { rango } = req.params;
-    const dato = await product.findAll(
-      {attributes: ['id', 'nombre','precio','descripcion','descripcioncorta','marca','imagen1']}
+    const offset = (rango - 1) * 10;
+    const limit = rango * 10;
+
+    const items = await product.findAll(
+      {
+        attributes: ['id', 'nombre','precio','categoria','descripcion','descripcioncorta','marca','imagen1'],
+        offset: offset,
+        limit: limit
+      }
     );
-    const datoRango = 
-    res.status(200).send(dato);
+    const cantidad = await product.count();
+
+    res.status(200).send(
+      {
+        items:items,
+        cantidad:cantidad
+      });
+
   }catch(error){
     console.log(error);
     res.status(400).send(error);
@@ -68,12 +81,13 @@ productRouter.delete('/productos/:id', async(req,res)=>{
   const dato = await product.destroy({
     where: {
     id: id
-  }}).then(function(result){
-    res.redirect(200,"")
-  });        
+  }});
+  res.writeHead(200, {
+    'ok': 'true'
+ })
 })
 
-productRouter.delete('/productos/imagenes/:id', async(req,res)=>{
+productRouter.get('/productos/imagenes/:id', async(req,res)=>{
   const {id} = req.params;
   const dato = await product.findAll({
     where:{

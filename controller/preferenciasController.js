@@ -1,10 +1,11 @@
 import mercadopago  from "mercadopago";
 import OrderId from "../models/orderId.js";
-//import env from "../env.js";
+//import env from '../env.js'
+//const config = env;
+const config = process.env;
 
 const order = OrderId;
-//const config = env;
-const config =process.env;
+
 mercadopago.configure({
   access_token:config.TEST_TOKEN
 });
