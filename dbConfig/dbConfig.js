@@ -2,6 +2,7 @@ import Sequelize from "sequelize";
 import mysql2 from 'mysql2';
 
 //import env from '../env.js'
+
 //const config = env;
 const config = process.env;
 

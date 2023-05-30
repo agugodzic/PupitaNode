@@ -42,7 +42,7 @@ app.use((req, res, next) => {
 })();
 
 app.get("/",(req,res)=>{
-  res.send("Pupita Backend CorsOptions")
+  res.send("<p>Pupita Pet Shop - Api</p>")
 });
 
 app.use(router);
