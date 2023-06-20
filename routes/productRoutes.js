@@ -27,11 +27,18 @@ productRouter.get('/productos/listar', async(req,res)=>{
   }
 })
 
+
+/*
+productos/rango || Devuelve 10 productos en total, el valor pasado como parametro define que rango de diez productos se envia de forma que:
+    *si rango = 1 se devuelven los primeros 10 productos.
+    *si rango = 2 se devuelven los segundos 10 productos
+
+*/
 productRouter.get('/productos/rango/:rango', async(req,res)=>{
   try{
     const { rango } = req.params;
     const offset = (rango - 1) * 10;
-    const limit = rango * 10;
+    const limit = 10;
 
     const items = await product.findAll(
       {
@@ -44,9 +51,86 @@ productRouter.get('/productos/rango/:rango', async(req,res)=>{
 
     res.status(200).send(
       {
-        items:items,
+        productos:items,
         cantidad:cantidad
       });
+
+  }catch(error){
+    console.log(error);
+    res.status(400).send(error);
+  }
+})
+
+productRouter.get('/productos/filter/:rango/:categoria/:orden', async(req,res)=>{
+  try{
+    const { rango , categoria, orden } = req.params;
+    const offset = (rango - 1) * 10;
+    const limit = 10;
+    var filters = {
+      order: [['precio', 'ASC']],
+      attributes: ['id', 'nombre','precio','categoria','descripcion','descripcioncorta','marca','imagen1'],
+      offset: offset,
+      limit: limit
+    }
+
+    if(categoria != 'all'){
+      filters = {
+        where:{categoria:categoria},
+        order: [['precio', 'ASC']],
+        attributes: ['id', 'nombre','precio','categoria','descripcion','descripcioncorta','marca','imagen1'],
+        offset: offset,
+        limit: limit
+      }
+    };
+    if(orden != 'asc'){
+      filters.order = [['id', 'DESC']];
+    };
+
+    const items = await product.findAll(filters);
+    const cantidad = await product.count();
+
+    res.status(200).send(
+      {
+        productos:items,
+        cantidad:cantidad,
+        limit:limit,
+        offset:offset,
+        categoria:categoria,
+        orden:orden
+      });
+
+  }catch(error){
+    console.log(error);
+    res.status(400).send(error);
+  }
+})
+
+productRouter.get('/productos/relacionados/:categoria/:cantidad', async(req,res)=>{
+  try{
+    const {categoria,cantidad} = req.params;
+    const offset = 0;
+    const limit = parseInt(cantidad);
+
+    var filters = {
+      order: [['precio', 'ASC']],
+      attributes: ['id', 'nombre','precio','categoria','descripcion','descripcioncorta','marca','imagen1'],
+      offset: offset,
+      limit: limit
+    }
+
+    if(categoria != 'all'){
+      filters = {
+        where:{categoria:categoria},
+        order: [['precio', 'DESC']],
+        attributes: ['id', 'nombre','precio','categoria','descripcion','descripcioncorta','marca','imagen1'],
+        offset: offset,
+        limit: limit
+      }
+    };
+
+    const items = await product.findAll(filters);
+
+    res.status(200).send(items);
 
   }catch(error){
     console.log(error);
@@ -72,8 +156,22 @@ productRouter.put('/productos/editar', async(req,res)=>{
     res.status(200).json(product);
   } catch (err) {
       console.log("Error: "+ err);
-      res.status(200).send(err);
+      res.status(400).send(err);
   }        
+})
+
+productRouter.post('/productos/id-list', async(req,res)=>{
+  try {
+  const ids = req.body;
+
+  const items = await product.findAll({
+    where: {id:ids}
+  });
+  res.status(200).send(items);
+} catch (err) {
+  console.log("Error: "+ err);
+  res.status(400).send(err);
+}    
 })
 
 productRouter.delete('/productos/:id', async(req,res)=>{
@@ -94,8 +192,8 @@ productRouter.get('/productos/imagenes/:id', async(req,res)=>{
       id:id
     },
     attributes: ['imagen2','imagen3','imagen4']
-  });
-  res.status(200).json(dato);   
+  })
+  res.status(200).json(dato);
 })
 
 export default productRouter;

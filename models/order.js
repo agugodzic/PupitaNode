@@ -14,7 +14,7 @@ import DataTypes from "sequelize";
         allowNull: false,
       },
       apellido: {
-        type: DataTypes.INTEGER,
+        type: DataTypes.STRING,
         allowNull: false,
       },
       email: {

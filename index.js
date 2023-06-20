@@ -17,6 +17,7 @@ app.use(morgan('dev'));
 
 app.use(cors({
   origin:"https://pupitapetshop.com.ar"
+  //origin:"http://localhost:4200"
 }));
 /*
 
