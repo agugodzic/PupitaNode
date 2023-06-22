@@ -4,6 +4,7 @@ import OrderId from "../models/orderId.js";
 //import env from '../env.js'
 
 //const config = env;
+
 const config = process.env;
 
 const order = OrderId;
@@ -14,7 +15,7 @@ mercadopago.configure({
 
 function preferenceGenerator(preference){
   var pref = {
-    back_urls:{
+    back_urls:{ 
       success: config.SUCCESS
  },
     items: preference.items,

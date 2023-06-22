@@ -15,10 +15,10 @@ productRouter.get('/productos/id/:id', async(req,res)=>{
   res.status(200).json(dato);
 })
 
-productRouter.get('/productos/listar', async(req,res)=>{
+productRouter.get('/productos/listarInfo', async(req,res)=>{
   try{
     const dato = await product.findAll(
-      {attributes: ['id', 'nombre','precio','descripcion','categoria','descripcioncorta','marca','imagen1']}
+      {attributes: ['id', 'nombre','precio','descripcion','categoria','descripcioncorta','marca']}
     );
     res.status(200).send(dato);
   }catch(error){
