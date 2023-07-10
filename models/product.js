@@ -29,6 +29,10 @@ import DataTypes from "sequelize";
       descripcion: {
         type: DataTypes.STRING,
       },
+      cantidadmaxima: {
+        type: DataTypes.INTEGER,
+        allowNull: true,
+      },
       imagen1: {
         type: DataTypes.TEXT('long'),
       },

@@ -54,7 +54,7 @@ categorieRouter.delete('/categorias/:id', async(req,res)=>{
       id: id
     }
     });
-    res.status(200).send("Elemento eliminado:" + dato);
+    res.send("Elemento eliminado:" + dato);
   } catch (err) {
       res.send(err);
   }        

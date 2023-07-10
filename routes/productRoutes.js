@@ -42,6 +42,7 @@ productRouter.get('/productos/rango/:rango', async(req,res)=>{
 
     const items = await product.findAll(
       {
+        order: [['id', 'DESC']],
         attributes: ['id', 'nombre','precio','categoria','descripcion','descripcioncorta','marca','imagen1'],
         offset: offset,
         limit: limit
@@ -66,28 +67,41 @@ productRouter.get('/productos/filter/:rango/:categoria/:orden', async(req,res)=>
     const { rango , categoria, orden } = req.params;
     const offset = (rango - 1) * 10;
     const limit = 10;
+    var cantidad = 0;
+
     var filters = {
-      order: [['precio', 'ASC']],
+      order: [['id', 'DESC']],
       attributes: ['id', 'nombre','precio','categoria','descripcion','descripcioncorta','marca','imagen1'],
       offset: offset,
       limit: limit
     }
 
-    if(categoria != 'all'){
+    if(categoria != 'all' && categoria != 'Todos los productos'){
       filters = {
         where:{categoria:categoria},
-        order: [['precio', 'ASC']],
+        order: [['id', 'DESC']],
         attributes: ['id', 'nombre','precio','categoria','descripcion','descripcioncorta','marca','imagen1'],
         offset: offset,
         limit: limit
-      }
-    };
-    if(orden != 'asc'){
-      filters.order = [['id', 'DESC']];
+      };
+      
+      cantidad = await product.count({
+        where:{categoria:categoria}
+      });
+    }else{
+      cantidad = await product.count();
+    }
+
+    if(orden == 'asc'){
+      filters.order = [['precio', 'ASC']];
+    }else if(orden == 'desc'){
+      filters.order = [['precio', 'DESC']];
     };
 
+    console.log(filters.order);
+
     const items = await product.findAll(filters);
-    const cantidad = await product.count();
+ 
 
     res.status(200).send(
       {
@@ -112,17 +126,17 @@ productRouter.get('/productos/relacionados/:categoria/:cantidad', async(req,res)
     const limit = parseInt(cantidad);
 
     var filters = {
-      order: [['precio', 'ASC']],
-      attributes: ['id', 'nombre','precio','categoria','descripcion','descripcioncorta','marca','imagen1'],
+      order: [['id', 'DESC']],
+      attributes: ['id', 'nombre','precio','categoria','descripcion','descripcioncorta','marca','cantidadmaxima','imagen1'],
       offset: offset,
       limit: limit
     }
 
-    if(categoria != 'all'){
+    if(categoria != 'all' || categoria != 'Todos los productos'){
       filters = {
         where:{categoria:categoria},
-        order: [['precio', 'DESC']],
-        attributes: ['id', 'nombre','precio','categoria','descripcion','descripcioncorta','marca','imagen1'],
+        order: [['id', 'DESC']],
+        attributes: ['id', 'nombre','precio','categoria','descripcion','descripcioncorta','marca','cantidadmaxima','imagen1'],
         offset: offset,
         limit: limit
       }
