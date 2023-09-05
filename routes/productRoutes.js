@@ -1,5 +1,8 @@
 import { Router } from "express";
+import Sequelize, { DatabaseError } from "sequelize";
 import Product from "../models/product.js";
+import previewGenerate from "../controller/productController.js";
+import sharp from 'sharp';
 
 const productRouter = Router();
 const product = Product;
@@ -28,13 +31,13 @@ productRouter.get('/productos/listarInfo', async(req,res)=>{
 })
 
 
-/*
+productRouter.get('/productos/rango/:rango', async(req,res)=>{
+  /*
 productos/rango || Devuelve 10 productos en total, el valor pasado como parametro define que rango de diez productos se envia de forma que:
     *si rango = 1 se devuelven los primeros 10 productos.
     *si rango = 2 se devuelven los segundos 10 productos
 
 */
-productRouter.get('/productos/rango/:rango', async(req,res)=>{
   try{
     const { rango } = req.params;
     const offset = (rango - 1) * 10;
@@ -43,7 +46,7 @@ productRouter.get('/productos/rango/:rango', async(req,res)=>{
     const items = await product.findAll(
       {
         order: [['id', 'DESC']],
-        attributes: ['id', 'nombre','precio','categoria','descripcion','descripcioncorta','marca','imagen1'],
+        attributes: ['id', 'nombre','precio','categoria','descripcioncorta','cantidadmaxima','preview'],
         offset: offset,
         limit: limit
       }
@@ -67,38 +70,38 @@ productRouter.get('/productos/filter/:rango/:categoria/:orden', async(req,res)=>
     const { rango , categoria, orden } = req.params;
     const offset = (rango - 1) * 10;
     const limit = 10;
+    const attributes = ['id', 'nombre','precio','categoria','descripcioncorta','cantidadmaxima','preview'];
     var cantidad = 0;
 
     var filters = {
       order: [['id', 'DESC']],
-      attributes: ['id', 'nombre','precio','categoria','descripcion','descripcioncorta','marca','imagen1'],
+      attributes: attributes,
       offset: offset,
       limit: limit
     }
 
     if(categoria != 'all' && categoria != 'Todos los productos'){
       filters = {
-        where:{categoria:categoria},
-        order: [['id', 'DESC']],
-        attributes: ['id', 'nombre','precio','categoria','descripcion','descripcioncorta','marca','imagen1'],
-        offset: offset,
-        limit: limit
+        ...filters, where:{categoria:categoria}
       };
       
       cantidad = await product.count({
         where:{categoria:categoria}
       });
+      
     }else{
       cantidad = await product.count();
     }
 
     if(orden == 'asc'){
-      filters.order = [['precio', 'ASC']];
+      filters = {
+        ...filters, order:[['precio', 'ASC']]
+      };
     }else if(orden == 'desc'){
-      filters.order = [['precio', 'DESC']];
+      filters = {
+        ...filters, order:[['precio', 'DESC']]
+      };
     };
-
-    console.log(filters.order);
 
     const items = await product.findAll(filters);
  
@@ -127,7 +130,7 @@ productRouter.get('/productos/relacionados/:categoria/:cantidad', async(req,res)
 
     var filters = {
       order: [['id', 'DESC']],
-      attributes: ['id', 'nombre','precio','categoria','descripcion','descripcioncorta','marca','cantidadmaxima','imagen1'],
+      attributes: ['id', 'nombre','precio','categoria','descripcioncorta','cantidadmaxima','preview'],
       offset: offset,
       limit: limit
     }
@@ -136,7 +139,7 @@ productRouter.get('/productos/relacionados/:categoria/:cantidad', async(req,res)
       filters = {
         where:{categoria:categoria},
         order: [['id', 'DESC']],
-        attributes: ['id', 'nombre','precio','categoria','descripcion','descripcioncorta','marca','cantidadmaxima','imagen1'],
+        attributes: ['id', 'nombre','precio','categoria','descripcioncorta','cantidadmaxima','preview'],
         offset: offset,
         limit: limit
       }
@@ -154,16 +157,55 @@ productRouter.get('/productos/relacionados/:categoria/:cantidad', async(req,res)
 
 productRouter.post('/productos/agregar', async(req,res)=>{
   try{
-    const add = await product.create(req.body);
-  res.status(200).json(add);
+    let prod;
+    let add;
+
+    if(req.body.imagen1){
+      const base64Data = req.body.imagen1.split(',')[1]; // Extraer la parte de base64
+      const originalImageBuffer = Buffer.from(base64Data, 'base64');
+  
+      // Redimensionar la imagen a un máximo de 180x180px
+      const previewImageBuffer = await sharp(originalImageBuffer)
+        .resize({ width: 170, height: 170, fit: 'inside' }) // Ajustar dentro de 180x180
+        .toBuffer();
+  
+      // Convertir la vista previa redimensionada a base64
+      const previewImageBase64 = `data:image/jpeg;base64,${previewImageBuffer.toString('base64')}`;
+  
+      // Actualizar la fila actual con la vista previa en la columna 'preview'
+      prod = {...req.body, preview: previewImageBase64};
+      add = await product.create(prod);
+    }else{
+      prod = {...req.body};
+      add = await product.create(prod);
+    }
+
+    res.status(200).json(add);
+
   }catch(err){
     res.status(400).json({error:"Error:" + err})
   }
+
 })
 
 productRouter.put('/productos/editar', async(req,res)=>{
   try {
-    await product.update(req.body,{
+    let prod;
+    const base64Data = req.body.imagen1.split(',')[1]; // Extraer la parte de base64
+    const originalImageBuffer = Buffer.from(base64Data, 'base64');
+
+    // Redimensionar la imagen a un máximo de 180x180px
+    const previewImageBuffer = await sharp(originalImageBuffer)
+      .resize({ width: 170, height: 170, fit: 'inside' }) // Ajustar dentro de 180x180
+      .toBuffer();
+
+    // Convertir la vista previa redimensionada a base64
+    const previewImageBase64 = `data:image/jpeg;base64,${previewImageBuffer.toString('base64')}`;
+
+    // Actualizar la fila actual con la vista previa en la columna 'preview'
+    prod = {...req.body, preview: previewImageBase64};
+
+    await product.update(prod,{
       where: {
       id: req.body.id
     }});
@@ -174,12 +216,28 @@ productRouter.put('/productos/editar', async(req,res)=>{
   }        
 })
 
+productRouter.put('/productos/variar-precios', async(req,res)=>{
+  try {
+    const porcentaje = req.body.porcentaje;
+    await product.update(
+      { precio: Sequelize.literal(`precio * (1 + ${porcentaje} / 100)`), },
+      { where: {} } // Aquí puedes agregar condiciones para filtrar los productos a actualizar
+    );
+    res.status(200).json({status:'ok'});
+  } catch (err) {
+      console.log("Error: "+ err);
+      res.status(400).send(err);
+  }        
+})
+
+
 productRouter.post('/productos/id-list', async(req,res)=>{
   try {
   const ids = req.body;
 
   const items = await product.findAll({
-    where: {id:ids}
+    where: {id:ids},
+    attributes: ['id', 'nombre','precio','descripcioncorta','cantidadmaxima','preview'],
   });
   res.status(200).send(items);
 } catch (err) {
@@ -209,6 +267,46 @@ productRouter.get('/productos/imagenes/:id', async(req,res)=>{
   })
   res.status(200).json(dato);
 })
+
+
+productRouter.get('/generate-previews', async (req, res) => {
+  try {
+    const products = await product.findAll({
+      attributes: ['id', 'imagen1'],
+    });
+
+    for (const prod of products) {
+      try {
+        const base64Data = prod.imagen1.split(',')[1]; // Extraer la parte de base64
+        const originalImageBuffer = Buffer.from(base64Data, 'base64');
+
+        // Redimensionar la imagen a un máximo de 180x180px
+        const previewImageBuffer = await sharp(originalImageBuffer)
+          .resize({ width: 170, height: 170, fit: 'inside' }) // Ajustar dentro de 180x180
+          .toBuffer();
+
+        // Convertir la vista previa redimensionada a base64
+        const previewImageBase64 = `data:image/jpeg;base64,${previewImageBuffer.toString('base64')}`;
+
+        // Actualizar la fila actual con la vista previa en la columna 'preview'
+        await product.update(
+          { preview: previewImageBase64 },
+          { where: { id: prod.id } }
+        );
+
+      } catch (error) {
+        console.error(`Error processing product with ID ${prod.id}:`, error);
+      }
+    }
+
+    res.status(200).send('Vistas previas generadas y guardadas correctamente.');
+  } catch (error) {
+    console.error('Error:', error);
+    res.status(500).send('Error al generar las vistas previas.');
+  }
+});
+
+
 
 export default productRouter;
 

@@ -33,6 +33,12 @@ import DataTypes from "sequelize";
         type: DataTypes.INTEGER,
         allowNull: true,
       },
+      talle: {
+        type: DataTypes.STRING,
+      },
+      preview: {
+        type: DataTypes.TEXT('long'),
+      },
       imagen1: {
         type: DataTypes.TEXT('long'),
       },

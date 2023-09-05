@@ -1,11 +1,11 @@
 import mercadopago  from "mercadopago";
 import OrderId from "../models/orderId.js";
 
-//import env from '../env.js'
+import env from '../env.js'
 
-//const config = env;
+const config = env;
 
-const config = process.env;
+//const config = process.env;
 
 const order = OrderId;
 
@@ -88,9 +88,9 @@ switch(topic){
 
   case "merchant_order":
     const orderId = paymentId;
-    console.log("Topic: " , topic, 'Order id: ', orderId)
+    console.log("Topic: " , topic, 'Order id: ', orderId);
     merchantOrder = await mercadopago.merchant_orders.findById(orderId);
-    console.log('Merchant order: ', merchantOrder)
+    console.log('Merchant order: ', merchantOrder);
     break;
 }
 }
