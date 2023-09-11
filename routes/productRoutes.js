@@ -274,6 +274,7 @@ productRouter.get('/generate-previews', async (req, res) => {
     const products = await product.findAll({
       attributes: ['id', 'imagen1'],
     });
+    console.log("productos: " + products.length);
 
     for (const prod of products) {
       try {
