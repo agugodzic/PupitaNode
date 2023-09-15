@@ -17,3 +17,5 @@ import DataTypes from "sequelize";
   );
 
   export default Categorie;
+
+  
