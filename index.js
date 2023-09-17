@@ -5,7 +5,10 @@ import orderRouter from "./routes/orderRoutes.js";
 import categorieRouter from "./routes/categorieRoutes.js";
 import checkoutRouter from "./routes/checkoutRoutes.js";
 import productRouter from "./routes/productRoutes.js";
+import portadaRouter from "./routes/portadaRoutes.js";
+import bannerRouter from "./routes/bannerRoutes.js";
 import userRouter from "./routes/userRoutes.js"
+import filtroRouter from "./routes/filterRoutes.js"
 import cors from "cors";
 import db from "./dbConfig/dbConfig.js";
 
@@ -52,5 +55,9 @@ app.use(productRouter);
 app.use(checkoutRouter);
 app.use(orderRouter);
 app.use(userRouter);
+app.use(bannerRouter);
+app.use(portadaRouter);
+app.use(filtroRouter);
+
 
 app.listen(3000,console.log("Server conection: localhost:3000 "))

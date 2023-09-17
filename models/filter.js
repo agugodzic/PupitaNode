@@ -2,10 +2,11 @@ import db from "../dbConfig/dbConfig.js";
 import { DataTypes } from "sequelize";
 
 const Filter = db.define(
-  "Filtro",
+  "filtro",
   {
     id: {
       type: DataTypes.INTEGER,
+      allowNull: true,
       primaryKey: true,
       autoIncrement: true,
     },
