@@ -1,5 +1,5 @@
 import { Router } from "express";
-import Sequelize, { DatabaseError } from "sequelize";
+import Sequelize, { DatabaseError, Op } from "sequelize";
 import Product from "../models/product.js";
 import previewGenerate from "../controller/productController.js";
 import sharp from 'sharp';
@@ -306,6 +306,50 @@ productRouter.get('/generate-previews', async (req, res) => {
     res.status(500).send('Error al generar las vistas previas.');
   }
 });
+
+
+productRouter.get('/productos/buscar/:parametro', async (req, res) => {
+  try {
+    const { parametro } = req.params;
+    
+    // Intenta buscar por ID primero
+    const productoPorId = await product.findOne({
+      where: {
+        id: parametro
+      }
+    });
+
+    if (productoPorId) {
+      res.status(200).json([productoPorId]);
+      return; // Sal de la función si se encontró por ID
+    }
+
+    const offset = 0;
+    const limit = 10;
+
+    // Si no se encontró por ID, busca por nombre
+    const productosPorNombre = await product.findAll({
+      where: {
+        nombre: {
+          [Op.like]: `%${parametro}%` // LIKE para MariaDB (MySQL)
+        }
+      },
+      attributes: ['id', 'nombre', 'precio', 'categoria', 'marca', 'descripcioncorta', 'cantidadmaxima', 'preview'],
+      offset: offset,
+      limit: limit
+    });
+
+    if (productosPorNombre.length > 0) {
+      res.status(200).json(productosPorNombre);
+    } else {
+      res.status(404).json({ mensaje: 'No se encontraron productos con ese nombre o ID.' });
+    }
+  } catch (error) {
+    console.error('Error:', error);
+    res.status(500).send('Error al buscar productos.');
+  }
+});
+
 
 
 
