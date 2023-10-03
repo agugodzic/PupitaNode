@@ -18,6 +18,17 @@ portadaRouter.get('/banner/id/:id', async (req, res) => {
   }
 });
 
+portadaRouter.get('/banner/ids', async (req, res) => {
+  try {
+    const ids = await Banner.findAll({ attributes: ['id'] });
+    const idList = ids.map(idObj => idObj.id);
+    res.status(200).json(idList);
+  } catch (error) {
+    console.log("Error: " + error);
+    res.status(400).send(error);
+  }
+});
+
 portadaRouter.get('/banner/listar', async (req, res) => {
   try {
     const dato = await Banner.findAll();
@@ -59,7 +70,7 @@ portadaRouter.delete('/banner/:id', async (req, res) => {
         id: id
       }
     });
-    res.send("Elemento eliminado:" + dato);
+    res.status(200).json({delete:true});
   } catch (err) {
     res.send(err);
   }
