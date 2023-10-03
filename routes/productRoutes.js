@@ -1,6 +1,5 @@
 import { Router } from "express";
-import Sequelize from 'sequelize';
-import {Op } from "sequelize";
+import  Sequelize, {Op } from "sequelize";
 import Product from "../models/product.js";
 import previewGenerate from "../controller/productController.js";
 import sharp from 'sharp';
