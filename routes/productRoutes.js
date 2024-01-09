@@ -7,7 +7,6 @@ import sharp from 'sharp';
 const productRouter = Router();
 const product = Product;
 
-
 productRouter.get('/productos/id/:id', async(req,res)=>{
   const {id} = req.params;
   const dato = await product.findAll({
@@ -30,14 +29,13 @@ productRouter.get('/productos/listarInfo', async(req,res)=>{
   }
 })
 
-
 productRouter.get('/productos/rango/:rango', async(req,res)=>{
   /*
-productos/rango || Devuelve 10 productos en total, el valor pasado como parametro define que rango de diez productos se envia de forma que:
-    *si rango = 1 se devuelven los primeros 10 productos.
-    *si rango = 2 se devuelven los segundos 10 productos
+  productos/rango || Devuelve 10 productos en total, el valor pasado como parametro define que rango de diez productos se envia de forma que:
+      *si rango = 1 se devuelven los primeros 10 productos.
+      *si rango = 2 se devuelven los segundos 10 productos
 
-*/
+  */
   try{
     const { rango } = req.params;
     const offset = (rango - 1) * 10;
@@ -105,7 +103,6 @@ productRouter.get('/productos/filter/:rango/:categoria/:orden', async(req,res)=>
 
     const items = await product.findAll(filters);
  
-
     res.status(200).send(
       {
         productos:items,
@@ -216,19 +213,46 @@ productRouter.put('/productos/editar', async(req,res)=>{
   }        
 })
 
-productRouter.put('/productos/variar-precios', async(req,res)=>{
+productRouter.put('/productos/variar-precios', async (req, res) => {
   try {
-    const porcentaje = req.body.porcentaje;
+    let porcentaje = req.body.porcentaje;
+    
+    if(porcentaje < -50){
+      porcentaje = -50;
+    }
+
     await product.update(
       { precio: Sequelize.literal(`precio * (1 + ${porcentaje} / 100)`), },
-      { where: {} } // Aquí puedes agregar condiciones para filtrar los productos a actualizar
+      { where: {} }
     );
-    res.status(200).json({status:'ok'});
+
+    await product.update(
+      { 
+        precio: Sequelize.literal(`
+          CASE 
+            WHEN precio < 5000 THEN 
+              CASE 
+                WHEN precio % 10 < 5 THEN FLOOR(precio / 10) * 10 
+                ELSE CEIL(precio / 10) * 10 
+              END
+            ELSE
+              CASE 
+                WHEN precio % 100 > 50 THEN CEIL(precio / 100) * 100
+                ELSE FLOOR(precio / 100) * 100
+              END
+          END
+        `) 
+      },
+      { where: {} } 
+    );
+
+    res.status(200).json({ status: 'ok' });
   } catch (err) {
-      console.log("Error: "+ err);
-      res.status(400).send(err);
-  }        
-})
+    console.log("Error: " + err);
+    res.status(400).send(err);
+  }
+});
+
 
 
 productRouter.post('/productos/id-list', async(req,res)=>{

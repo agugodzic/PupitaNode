@@ -1,5 +1,6 @@
 import express from "express";
 import morgan from "morgan";
+import cors from "cors";
 import router from "./routes/orderIdsRoutes.js";
 import orderRouter from "./routes/orderRoutes.js";
 import categorieRouter from "./routes/categorieRoutes.js";
@@ -9,7 +10,6 @@ import portadaRouter from "./routes/portadaRoutes.js";
 import bannerRouter from "./routes/bannerRoutes.js";
 import userRouter from "./routes/userRoutes.js"
 import filtroRouter from "./routes/filterRoutes.js"
-import cors from "cors";
 import db from "./dbConfig/dbConfig.js";
 
 const app = express();
@@ -17,11 +17,12 @@ const DB = db;
 
 app.use(express.json({limit:'50mb'}));
 app.use(morgan('dev'));
+
 /*
-app.use(cors({
-  origin:"https://pupitapetshop.com.ar"
-   // origin:"http://localhost:4200"
-}));
+  app.use(cors({
+    origin:"https://pupitapetshop.com.ar"
+    // origin:"http://localhost:4200"
+  }));
 */
 
 app.use((req, res, next) => {
