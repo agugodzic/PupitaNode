@@ -1,6 +1,8 @@
 import express from "express";
 import morgan from "morgan";
 import cors from "cors";
+import https from 'https';
+import fs from 'fs';
 import router from "./routes/orderIdsRoutes.js";
 import orderRouter from "./routes/orderRoutes.js";
 import categorieRouter from "./routes/categorieRoutes.js";
@@ -24,6 +26,11 @@ app.use(morgan('dev'));
     // origin:"http://localhost:4200"
   }));
 */
+
+const httpsOptions = {
+  key: fs.readFileSync("server.key"),
+  cert: fs.readFileSync("server.cert"),
+};
 
 app.use((req, res, next) => {
     res.header('Access-Control-Allow-Origin', '*');
@@ -61,4 +68,6 @@ app.use(portadaRouter);
 app.use(filtroRouter);
 
 
-app.listen(3000,console.log("Server conection: localhost:3000 "))
+https.createServer(httpsOptions, app).listen(3000, () => {
+  console.log("✅ Server HTTPS en: https://srv820344.hstgr.cloud:3000");
+});
